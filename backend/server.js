@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+const path = require('path');
 
 const app = express();
 
@@ -30,10 +31,6 @@ mongoose.connection.on('error', err => {
     console.error('❌ MongoDB Runtime Error:', err.message);
 });
 
-// Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to UrbanResolve API." });
-});
 
 require("./routes/auth.routes")(app);
 require("./routes/report.routes")(app);
@@ -67,4 +64,12 @@ server.on('error', (err) => {
         // Re-throw other errors
         throw err;
     }
+});
+// Serve static frontend files
+// NOTE: Change '../frontend' to the actual name of your frontend folder!
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Catch-all route to send the HTML file
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
