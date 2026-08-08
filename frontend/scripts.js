@@ -148,7 +148,7 @@ let firebaseAuth = null;
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const API_URL = 'http://localhost:8080/api';
+    const API_URL = '/api';
 
     // --- NEW FIREBASE INITIALIZATION ---
     // CRITICAL: Initialize the app and the Auth service immediately on DOM load.
