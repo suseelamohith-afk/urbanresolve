@@ -1,0 +1,961 @@
+<html lang="en">
+<head>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UResolve - Civic Issue Reporting</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div id="logo" class="logo">UResolve</div>
+        <div class="nav-links">
+            <div class="dropdown">
+                <button class="dropbtn">Dashboards <i class="fas fa-caret-down" style="font-size: 0.8em; margin-left: 4px;"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" id="citizen-dashboard-link-nav">Citizen Dashboard</a>
+                    <a href="#" id="bbmp-dashboard-link-nav">Municipal Dashboard</a>
+                    <a href="#" id="worker-dashboard-link-nav">Worker Dashboard</a> <a href="#" id="admin-dashboard-link-nav">Admin Dashboard</a>
+                </div>
+            </div>
+            <a href="#" id="about-link">About Us</a>
+            <a href="#" id="signup-link" class="btn btn-primary">Sign Up</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="landing-page" class="page active">
+            <div class="landing-hero">
+                <h1>A Cleaner City, A Better Life</h1>
+                <p>Report civic issues, track their resolution, and help build a greener, more responsible community.</p>
+                <div class="landing-button-group">
+                    <button id="report-issue-main-btn" class="btn">Report an Issue</button>
+                    <button id="nearest-bin-main-btn" class="btn"><i class="fas fa-trash-alt"></i> Nearest Bin</button>
+                    </div>
+            </div>
+            <div class="landing-stats">
+                <div class="stat-box resolved"> <div class="icon-circle"><i class="fas fa-check-double"></i></div> <div class="stat-content"> <h3 id="stat-issues-resolved"><i class="fas fa-spinner fa-spin"></i></h3> <p>Issues Resolved</p> </div> </div>
+                <div class="stat-box total-reports"> <div class="icon-circle" style="background-color: var(--gradient-start);"><i class="fas fa-file-alt"></i></div> <div class="stat-content"> <h3 id="stat-avg-response"><i class="fas fa-spinner fa-spin"></i></h3> <p>Total Reports</p> </div> </div>
+                <div class="stat-box active-citizens"> <div class="icon-circle"><i class="fas fa-users"></i></div> <div class="stat-content"> <h3 id="stat-active-citizens"><i class="fas fa-spinner fa-spin"></i></h3> <p>Active Citizens</p> </div> </div>
+            </div>
+
+            <section class="how-it-works-section">
+                <h2>How It Works</h2>
+                <p>A simple, transparent process to make a real impact in your community.</p>
+                <div class="steps-container">
+                    <div class="step-item"> <div class="step-circle">1</div> <h3>Report</h3> <p>Snap a photo, select a category, and submit the issue with an accurate location.</p> </div>
+                    <div class="step-item"> <div class="step-circle">2</div> <h3>Track</h3> <p>Receive real-time updates and monitor the progress as your report is assigned and addressed.</p> </div>
+                    <div class="step-item"> <div class="step-circle">3</div> <h3>Resolve</h3> <p>Get notified when the issue is resolved and see the positive change in your neighborhood.</p> </div>
+                </div>
+            </section>
+        </section>
+        
+        <section id="nearest-bin-page" class="page">
+            <div class="card">
+                <h2>Find Nearest Public Waste Bin</h2>
+                <p class="status-message" id="bin-map-status">Locating your position and loading public bins...</p>
+                <div id="nearest-bin-map-container"></div>
+            </div>
+        </section>
+        <section id="about-us-page" class="page">
+            <div class="card about-content">
+                <h2>Our Mission: Empowering Citizens, Resolving Issues</h2>
+                <p>UResolve is a civic engagement platform designed to bridge the gap between citizens and local municipal bodies. Our goal is to create a transparent, efficient, and community-driven process for identifying, reporting, and resolving waste and civic issues, starting with Bengaluru.</p>
+
+                <h2>How We Work</h2>
+                <p>We leverage modern technology to streamline the often frustrating process of civic reporting:</p>
+                
+                <h3>Transparency and Accountability</h3>
+                <p>Every report submitted is tracked in real-time, providing citizens with instant updates on the status, from assignment to resolution. This level of transparency ensures accountability from all stakeholders, including Municipal staff and dedicated field workers.</p>
+
+                <h3>Data-Driven Action</h3>
+                <p>The aggregated data from citizen reports helps Municipal staff identify hotspots, track category trends, and allocate resources efficiently. This leads to proactive, data-informed decision-making rather than reactive problem-solving.</p>
+                
+                <h3>Community Collaboration</h3>
+                <p>UResolve thrives on community participation. By simplifying the reporting process to a few clicks, we encourage more citizens to become active monitors of their neighborhoods, fostering a shared responsibility for a cleaner city.</p>
+
+                <h2>Our Partners</h2>
+                <p>We are built in close collaboration with the Municipal Corporation to ensure seamless integration into existing civic resolution frameworks.</p>
+            </div>
+        </section>
+        <section id="sign-up-page" class="page">
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h2>Create Your Account</h2>
+                <p style="color: var(--secondary-color); margin-top: -1rem; margin-bottom: 2rem;">Join thousands of citizens making a difference.</p>
+                <form id="sign-up-form">
+                    <div class="form-group"><label for="signup-name">Full Name</label><input type="text" id="signup-name" required></div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Create Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signup-password" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password-confirm">Re-enter Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signup-password-confirm" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="signup-phone" 
+                            placeholder="Enter 10-digit mobile number" 
+                            maxlength="10" 
+                            pattern="[0-9]{10}" 
+                            inputmode="numeric" 
+                            required>
+                    </div>
+                    </div>
+                <p id="signup-error" style="display: none; color: var(--danger-color); margin-bottom: 1rem;"></p>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+        </div>
+        </section>
+        
+        
+        <section id="citizen-login-page" class="page">
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h2>Welcome Back!</h2>
+                 <p style="color: var(--secondary-color); margin-top: -1rem; margin-bottom: 2rem;">Log in to report and track issues.</p>
+                <form id="citizen-login-form">
+                    <div class="form-group">
+                        <label for="username">Email Address</label>
+                        <input type="email" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                    <p id="citizen-login-error" style="display: none; color: var(--danger-color); margin-bottom: 1rem;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    <p style="font-size: 0.9rem; margin-top: 1.5rem; color: var(--secondary-color); display: flex; justify-content: space-between;">
+                        <span>
+                            Have no account? 
+                            <a href="#" id="login-to-signup-link" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign up</a>
+                        </span>
+                        <a href="#" id="citizen-forgot-password-link" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Forgot Password?</a>
+                    </p>
+                </form>
+            </div>
+        </section>
+        
+        <section id="admin-login-page" class="page">
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h2>Admin Portal Login</h2>
+                <p style="color: var(--secondary-color); margin-top: -1rem; margin-bottom: 2rem;">Please enter your credentials to continue.</p>
+                
+                <form id="admin-login-form">
+                    <div class="form-group">
+                        <label for="admin-username">Username</label>
+                        <input type="text" id="admin-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="admin-password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                    <p id="admin-login-error" style="display: none; color: var(--danger-color); margin-bottom: 1rem;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="bbmp-login-page" class="page">
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h2>Municipal Staff Portal Login</h2>
+                <p style="color: var(--secondary-color); margin-top: -1rem; margin-bottom: 2rem;">Please log in with your Municipal-assigned credentials.</p>
+                
+                <form id="bbmp-login-form">
+                    <div class="form-group">
+                        <label for="bbmp-username">Email Address</label>
+                        <input type="email" id="bbmp-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bbmp-password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="bbmp-password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                    <p id="bbmp-login-error" style="display: none; color: var(--danger-color); margin-bottom: 1rem;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+            </div>
+        </section>
+        
+        <section id="worker-login-page" class="page">
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h2>Municipal Worker Portal Login</h2>
+                <p style="color: var(--secondary-color); margin-top: -1rem; margin-bottom: 2rem;">Access your daily assignments using your provisioned credentials.</p>
+                
+                <form id="worker-login-form">
+                    <div class="form-group">
+                        <label for="worker-username">Worker Email Address</label>
+                        <input type="email" id="worker-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="worker-password">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="worker-password" required>
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                    <p id="worker-login-error" style="display: none; color: var(--danger-color); margin-bottom: 1rem;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+            </div>
+        </section>
+        
+        <section id="citizen-dashboard-page" class="page">
+            <header class="dashboard-header">
+                <div class="platform-info">
+                    <h1>Citizen Dashboard</h1>
+                    <p>Welcome to your personal portal for civic action.</p>
+                </div>
+                <div class="user-profile">
+                    <p id="dashboard-user-name" class="user-name" style="margin:0;">John Doe</p>
+                    <p id="dashboard-user-email" class="user-email" style="margin:0 0 8px 0; color: var(--secondary-color);"></p>
+                    <button id="sign-out-btn" class="btn btn-sign-out">Sign Out</button>
+                </div>
+            </header>
+    
+            <div class="stats-grid">
+                <div class="stat-card stat-card--total"> <div class="stat-card-header"> <span>Total Reports</span> <i class="fas fa-file-alt"></i> </div> <div id="citizen-stat-total" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--pending"> <div class="stat-card-header"> <span>Pending</span> <i class="fas fa-hourglass-half"></i> </div> <div id="citizen-stat-pending" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--progress"> <div class="stat-card-header"> <span>In Progress</span> <i class="fas fa-cogs"></i> </div> <div id="citizen-stat-progress" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--resolved"> <div class="stat-card-header"> <span>Resolved</span> <i class="fas fa-check-circle"></i> </div> <div id="citizen-stat-resolved" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+            </div>
+    
+            <div style="text-align: center; margin: 2rem 0;">
+                <button id="show-report-issue" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Report a New Issue</button>
+            </div>
+    
+            <div class="reports-section">
+                <h3>Your Submitted Reports</h3>
+                <nav class="citizen-tabs" id="citizen-report-tabs">
+                    <button class="citizen-tab-button active" data-tab="submitted">Submitted Reports</button>
+                    <button class="citizen-tab-button" data-tab="resolved">Resolved Reports</button>
+                </nav>
+                
+                <div class="reports-table-container" style="overflow-x: auto;">
+                    <table class="reports-table">
+                        <thead> <tr> <th>Issue Details</th> <th>Status</th> <th>Date Submitted</th> </tr> </thead>
+                        <tbody id="citizen-reports-tbody"><tr><td colspan="3" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading reports...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <section id="worker-dashboard-page" class="page">
+            <header class="dashboard-header">
+                 <div class="platform-info">
+                    <h1>Worker Dashboard</h1>
+                    <p>Welcome, <span id="worker-dashboard-name"></span>. Your current assignments are listed below.</p>
+                </div>
+                <div style="position: relative;">
+                    <div id="worker-profile-icon" class="profile-icon"><i class="fas fa-user"></i></div>
+                    <div id="worker-profile-dropdown" class="profile-dropdown" style="display: none;">
+                        <p><strong>Worker:</strong> <span id="worker-profile-name"></span></p>
+                        <p><strong>Username:</strong> <span id="worker-profile-email"></span></p>
+                        <p><strong>Area:</strong> <span id="worker-profile-area"></span></p>
+                        <p><strong>Reports Resolved:</strong> <span id="worker-profile-resolved-count"><i class="fas fa-spinner fa-spin"></i></span></p>
+                        <button id="worker-update-profile-btn" class="btn btn-secondary" style="width: 100%; margin-bottom: 10px;"><i class="fas fa-edit"></i> Update Details</button>
+                        <button id="worker-sign-out-btn" class="btn btn-sign-out" style="width: 100%;">Sign Out</button>
+                    </div>
+                </div>
+            </header>
+    
+            <div class="stats-grid">
+                <div class="stat-card stat-card--total"> <div class="stat-card-header"> <span>Total Assignments</span> <i class="fas fa-briefcase"></i> </div> <div id="worker-stat-total" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--pending"> <div class="stat-card-header"> <span>Pending</span> <i class="fas fa-hourglass-half"></i> </div> <div id="worker-stat-pending" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--progress"> <div class="stat-card-header"> <span>In Progress</span> <i class="fas fa-cogs"></i> </div> <div id="worker-stat-progress" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card stat-card--resolved"> <div class="stat-card-header"> <span>Total Resolved</span> <i class="fas fa-check-circle"></i> </div> <div id="worker-stat-resolved-today" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card" style="background-color: #E0F8FF;"> <div class="stat-card-header"> <span>Resolution Points</span> <i class="fas fa-award" style="color: var(--primary-color);"></i> </div> <div id="worker-stat-points" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+                <div class="stat-card" style="background-color: #FFF3E0;"> <div class="stat-card-header"> <span>Efficiency Rank</span> <i class="fas fa-medal" style="color: #FFC107;"></i> </div> <div id="worker-stat-rank" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> </div>
+            </div>
+    
+            <div class="reports-section">
+                <h3>Your Assigned Reports</h3>
+                <nav class="citizen-tabs" id="worker-report-tabs">
+                    <button class="citizen-tab-button active" data-tab="active">Active Assignments</button>
+                    <button class="citizen-tab-button" data-tab="resolved">Resolved Reports</button>
+                </nav>
+                <div class="report-card-list" id="worker-assigned-reports">
+                    <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading assignments...</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="report-issue-page" class="page">
+            <div class="card" style="max-width: 700px; margin: auto; text-align: left;"> 
+                <h2 style="text-align: center;">Report an Issue</h2> 
+                <p style="color: var(--secondary-color); text-align: center; margin-top: -1rem; margin-bottom: 2rem;">Help us improve your community by providing clear details.</p>
+                <form id="issue-report-form"> 
+                    <div class="form-group">
+                        <label for="issue-category">Issue Category</label>
+                        <select id="issue-category" required>
+                            <option value="" disabled selected>-- Select a category --</option>
+                            <option value="Overflowing Bin">Overflowing Public Bin</option>
+                            <option value="Illegal Dumping">Illegal Dumping</option>
+                            <option value="Unsegregated Waste">Unsegregated Waste</option>
+                            <option value="E-Waste Pickup">E-Waste Pickup</option>
+                            <option value="Hazardous Waste">Hazardous Waste</option>
+                            <option value="Bulk Waste">Bulk Waste</option>
+                            <option value="Others">Others</option> // <--- NEW OPTION ADDED HERE
+                        </select>
+                    </div>
+                    <div class="form-group" id="other-category-group" style="display: none;">
+                        <label for="other-category-name">Specify Report Name</label>
+                        <input type="text" id="other-category-name" placeholder="E.g., Enter ur issue "xlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="issue-description">Description</label>
+                        <div style="position: relative;"> 
+                            <textarea id="issue-description" rows="6" 
+                                placeholder="Provide more details like the exact problem, its impact, etc. or click the mic button." 
+                                required 
+                                style="width: 100%; padding-right: 40px; box-sizing: border-box;"></textarea> 
+                            <button type="button" id="mic-to-text-btn" 
+                                class="btn btn-secondary" 
+                                style="position: absolute; bottom: 10px; right: 10px; padding: 0.5rem; width: 35px; height: 35px; border-radius: 8px; flex-shrink: 0; align-self: flex-start; margin-top: 1px;">
+                                <i class="fas fa-microphone" style="margin: 0;"></i> 
+                            </button>
+                        </div>
+                        <p id="mic-status-message" style="display: none; color: var(--primary-color); font-size: 0.85rem; margin-top: 5px;"></p>
+
+                    <div class="form-group">
+                        <label for="issue-location">Location</label>
+                        <input type="hidden" id="issue-location" value="" required> 
+                        <input type="hidden" id="issue-latitude" value="">
+                        <input type="hidden" id="issue-longitude" value="">
+                        <div id="issue-location-map"></div>
+                        <p id="map-coordinates-display">Click a button below to set the location.</p>
+                        <div class="location-button-group">
+                            <button type="button" id="get-location-btn" class="btn btn-secondary">
+                                <i class="fas fa-location-crosshairs"></i> Current Location
+                            </button>
+                        </div>
+                        <div id="manual-address-fields">
+                            <div class="form-group" style="margin-bottom: 0.5rem;"><input type="text" id="address-line-1" placeholder="Address Line 1" oninput="updateMapFromAddress()"></div>
+                            <div class="form-group" style="margin-bottom: 0.5rem;"><input type="text" id="address-line-2" placeholder="Address Line 2 (Optional)" oninput="updateMapFromAddress()"></div>
+                            <div class="form-group" style="margin-bottom: 0;"><input type="text" id="city-input" placeholder="City" oninput="updateMapFromAddress()"></div>
+                        </div>
+                    </div> 
+                    
+                    <div class="form-group">
+                        <label for="issue-area-input">Area</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="issue-area-input" placeholder="Search or select area..." autocomplete="off" required>
+                            <input type="hidden" id="issue-area-id">
+                            <div id="area-autocomplete-list" class="autocomplete-list" style="display: none;"></div>
+                        </div>
+                    </div> 
+                    
+                    <div class="form-group">
+                        <label for="file-upload-zone">Upload Photo or Video</label>
+                        <div id="file-upload-zone" class="file-drop-zone" style="padding: 1rem;">
+                            <div style="margin-bottom: 10px; font-weight: 600;">Choose Media Source:</div>
+                            <div class="resolve-upload-btn-group">
+                                <button type="button" class="btn btn-secondary upload-source-btn" data-source="gallery"><i class="fas fa-image"></i> Gallery/Files</button>
+                                <button type="button" class="btn btn-secondary upload-source-btn" data-source="camera"><i class="fas fa-camera"></i> Camera</button>
+                            </div>
+                            <input type="file" id="issue-photo" accept="image/*,video/*" class="file-input-hidden">
+                        </div>
+                        <div id="file-preview-container"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Report</button> 
+                </form> 
+            </div> 
+        </section>
+
+        <section id="bbmp-dashboard-page" class="page">
+             <div class="admin-dashboard-container">
+                 <div class="loading-overlay" id="bbmp-loading-overlay"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                 <div class="admin-header">
+                     <div style="flex-grow: 1;">
+                         <h2>Municipal Staff Portal</h2>
+                         <p style="color: var(--secondary-color);">Manage, track, and analyze civic issues for your assigned area efficiently.</p>
+                     </div>
+                     <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <div class="admin-menu-dropdown">
+                            <button id="bbmp-menu-toggle" class="btn btn-secondary" style="font-size: 1.2rem; padding: 0.5rem 1rem;"><i class="fas fa-bars"></i></button>
+                            <div id="bbmp-menu-content" class="admin-menu-content">
+                                <button id="bbmp-manage-workers-btn"><i class="fas fa-users" style="margin-right: 8px;"></i>Manage Workers</button>
+                                <button id="bbmp-manage-worker-accounts-btn"><i class="fas fa-user-lock" style="margin-right: 8px;"></i>Worker Accounts</button>
+                                <button id="bbmp-apply-leave-btn"><i class="fas fa-calendar-alt" style="margin-right: 8px;"></i>Apply Leave</button>
+                                <button id="bbmp-view-leaves-btn"><i class="fas fa-list" style="margin-right: 8px;"></i>View Applied Leaves</button>
+                            </div>
+                        </div>
+                        <button id="bbmp-sign-out-btn" class="btn btn-secondary">Sign Out</button>
+                     </div>
+                 </div>
+                 <nav class="admin-tabs">
+                      <button class="admin-tab-button active" data-tab="dashboard">Dashboard</button>
+                      <button class="admin-tab-button" data-tab="manage">Manage Reports</button>
+                      <button class="admin-tab-button" data-tab="analytics">Analytics</button>
+                 </nav>
+                 <div id="bbmp-tab-dashboard" class="admin-tab-content active">
+                      <div class="admin-grid">
+                          
+                          <div class="admin-card grid-col-4">
+                              <div class="admin-grid summary-stats-grid">
+                                  <div class="summary-stat-card"> <div class="stat-title">Total Reports</div> <div id="bbmp-stat-total" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.2%</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Avg. Resolution Time</div> <div class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change negative"><i class="fas fa-arrow-up"></i> 0.3 days</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Staff Satisfaction</div> <div class="stat-value">4.6<small>/5</small></div> <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 0.2</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Resolved Today</div> <div id="bbmp-stat-resolved-today" class="stat-value urgent"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change">Total resolved today</div> </div>
+                              </div>
+                          </div>
+                          <div class="admin-card grid-col-2"><h3>Weekly Reports</h3><div class="chart-container"><canvas id="bbmpWeeklyActivityChart"></canvas></div></div>
+
+                          <div class="admin-card grid-col-2"><h3>Reports by Category</h3><div class="chart-container"><canvas id="bbmpDepartmentDonutChart"></canvas></div></div>
+                          
+                          <div class="admin-card grid-col-4"> 
+                              <h3>🏆 Top Workers by Reward Points</h3>
+                              <div class="trends-list" id="bbmp-top-workers-list">
+                                 <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading rankings...</p>
+                              </div>
+                          </div>
+                      </div>
+                 </div>
+                 <div id="bbmp-tab-manage" class="admin-tab-content">
+                      <div class="filter-bar">
+                          <input type="search" id="bbmp-filter-search" placeholder="Search by ID, area, or keyword...">
+                          <select id="bbmp-filter-category">
+                              <option>All Categories</option>
+                              <option>Overflowing Bin</option>
+                              <option>Illegal Dumping</option>
+                              <option>E-Waste Pickup</option>
+                              <option>Unsegregated Waste</option>
+                          </select>
+                          <select id="bbmp-filter-status">
+                              <option>All Statuses</option>
+                              <option>Pending</option>
+                              <option>In Progress</option>
+                              <option>Resolved</option>
+                              <option>Review Required</option> <option>Rejected</option> </select>
+                          
+                      </div>
+                      
+                      <nav class="citizen-tabs" id="bbmp-report-tabs">
+                          <button class="citizen-tab-button active" data-tab="active">Active Reports</button>
+                          <button class="citizen-tab-button" data-tab="resolved">Resolved Reports</button>
+                      </nav>
+                      <div class="bbmp-report-card-list report-card-list">
+                        <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading reports...</p>
+                      </div>
+                 </div>
+                 <div id="bbmp-tab-analytics" class="admin-tab-content">
+                      <div class="admin-grid">
+                          <div class="admin-card grid-col-2">
+                              <h3>Issue Categories & Trends</h3>
+                              <div class="trends-list" id="bbmp-analytics-trends-list">
+                                 <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading trends...</p>
+                                 </div>
+                          </div>
+                          <div class="admin-card grid-col-2">
+                               <h3>Geographic Hotspots</h3>
+                               <div id="bbmp-analytics-map-container" style="height: 450px; width: 100%; border-radius: var(--border-radius); overflow: hidden;"></div>
+                          </div>
+                      </div>
+                 </div>
+             </div>
+        </section>
+        <section id="admin-dashboard-page" class="page">
+             <div class="admin-dashboard-container">
+                 <div class="loading-overlay" id="admin-loading-overlay"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                 <div class="admin-header">
+                     <div style="flex-grow: 1;">
+                         <h2>Admin Portal</h2>
+                         <p style="color: var(--secondary-color);">Manage, track, and analyze civic issues efficiently from one place.</p>
+                     </div>
+                     <div style="display: flex; align-items: flex-start; gap: 10px;">
+                        <div class="admin-menu-dropdown">
+                            <button id="admin-menu-toggle" class="btn btn-secondary" style="font-size: 1.2rem; padding: 0.5rem 1rem;"><i class="fas fa-bars"></i></button>
+                            <div id="admin-menu-content" class="admin-menu-content">
+                                <button id="manage-areas-btn"><i class="fas fa-city" style="margin-right: 8px;"></i>Manage Areas</button>
+                                <button id="manage-bbmp-accounts-btn"><i class="fas fa-users-cog" style="margin-right: 8px;"></i>Municipal Accounts</button>
+                            </div>
+                        </div>
+                        <button id="admin-sign-out-btn" class="btn btn-secondary">Sign Out</button>
+                     </div>
+                 </div>
+                 <nav class="admin-tabs">
+                      <button class="admin-tab-button active" data-tab="dashboard">Dashboard</button>
+                      <button class="admin-tab-button" data-tab="manage">Manage Reports</button>
+                      <button class="admin-tab-button" data-tab="analytics">Analytics</button>
+                 </nav>
+                 <div id="tab-dashboard" class="admin-tab-content active">
+                      <div class="admin-grid">
+                          <div class="admin-card grid-col-4">
+                              <div class="admin-grid summary-stats-grid">
+                                  <div class="summary-stat-card"> <div class="stat-title">Total Reports</div> <div id="admin-stat-total" class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.2%</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Avg. Resolution Time</div> <div class="stat-value"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change negative"><i class="fas fa-arrow-up"></i> 0.3 days</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Citizen Satisfaction</div> <div class="stat-value">4.6<small>/5</small></div> <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 0.2</div> </div>
+                                  <div class="summary-stat-card"> <div class="stat-title">Resolved Today</div> <div id="admin-stat-resolved-today" class="stat-value urgent"><i class="fas fa-spinner fa-spin"></i></div> <div class="stat-change">Total resolved today</div> </div>
+                              </div>
+                          </div>
+                          <div class="admin-card grid-col-2"><h3>Weekly Reports</h3><div class="chart-container"><canvas id="weeklyActivityChart"></canvas></div></div>
+                          <div class="admin-card grid-col-2"><h3>Reports by Category</h3><div class="chart-container"><canvas id="departmentDonutChart"></canvas></div></div>
+                      </div>
+                 </div>
+                 <div id="tab-manage" class="admin-tab-content">
+                      <div class="filter-bar">
+                          <input type="search" id="filter-search" placeholder="Search by ID, area, or keyword...">
+                          <select id="filter-category">
+                              <option>All Categories</option>
+                              <option>Overflowing Bin</option>
+                              <option>Illegal Dumping</option>
+                              <option>E-Waste Pickup</option>
+                              <option>Unsegregated Waste</option>
+                          </select>
+                          <select id="filter-status">
+                              <option>All Statuses</option>
+                              <option>Pending</option>
+                              <option>In Progress</option>
+                              <option>Resolved</option>
+                              <option>Review Required</option> <option>Rejected</option> </select>
+                          
+                          
+                      </div>
+                      <div class="report-card-list">
+                        <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading reports...</p>
+                      </div>
+                 </div>
+                 <div id="tab-analytics" class="admin-tab-content">
+                      <div class="admin-grid">
+                          <div class="admin-card grid-col-2">
+                              <h3>Issue Categories & Trends</h3>
+                              <div class="trends-list" id="analytics-trends-list">
+                                 <p style="text-align:center; color: var(--secondary-color); padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading trends...</p>
+                                 </div>
+                          </div>
+                          <div class="admin-card grid-col-2">
+                               <h3>Geographic Hotspots</h3>
+                               <div id="analytics-map-container"></div>
+                          </div>
+                      </div>
+                 </div>
+             </div>
+        </section>
+    </div>
+    
+    <footer id="contact-section" class="footer">
+        <div class="footer-container">
+            <div class="footer-column"> <h3>UResolve</h3> <p>Connecting communities and improving cities through technology-driven civic engagement.</p> </div>
+            <div class="footer-column"> <h3>Quick Links</h3> <a href="#" id="home-footer-link">Home</a> <a href="#" id="about-footer-link">About Us</a> <a href="#" id="admin-footer-link">Admin Portal</a> </div>
+            <div class="footer-column"> <h3>Contact Us</h3> <p><i class="fas fa-map-marker-alt"></i> 123 Civic Center, Bengaluru, 560001</p> <p><i class="fas fa-phone"></i> <a href="tel:+918012345678">+91 80 1234 5678</a></p> <p><i class="fas fa-envelope"></i> <a href="mailto:contact@uresolve.gov.in">contact@uresolve.gov.in</a></p> </div>
+        </div>
+        <div class="footer-bottom"> <p>© 2025 UResolve. All Rights Reserved.</p> </div>
+    </footer>
+
+    <div id="report-details-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-report-title"></h3>
+                <button id="modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-column">
+                    <h4>Submitted Media</h4>
+                    <div id="modal-media-container">
+                        <img id="modal-image" src="" alt="Report Image" style="display: none;">
+                        <video id="modal-video" src="" controls style="display: none; width: 100%;"></video>
+                        
+                        <div id="modal-resolution-media" class="resolution-media" style="display: none; margin-bottom: 1.5rem;">
+                            <h5>Resolution Proof (Worker Upload)</h5>
+                            <img id="modal-resolution-image" src="" alt="Resolution Image" style="display: none;">
+                            <video id="modal-resolution-video" src="" controls style="display: none; width: 100%;"></video>
+                        </div>
+                        
+                    </div>
+                    
+                    <h4 id="modal-location-title">Location</h4>
+                    <div id="modal-map"></div>
+                    
+                </div>
+                <div class="modal-column">
+                    <h4>Details</h4>
+                    <div class="modal-info-item">
+                        <strong>Report ID</strong>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span id="modal-report-id-display" style="font-weight: 600;"></span>
+                            <button id="copy-report-id-btn" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;"><i class="fas fa-copy"></i> Copy</button>
+                        </div>
+                    </div>
+                    <div class="modal-info-item" id="modal-badges-container"> 
+                        <strong>Status</strong>
+                        <span id="modal-badges"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>Category</strong>
+                        <span id="modal-category"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>Full Description</strong>
+                        <span id="modal-description"></span>
+                    </div>
+                    <div class="modal-info-item" id="modal-coordinates-container">
+                        <strong>Coordinates</strong>
+                        <span id="modal-coordinates"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>Area</strong>
+                        <span id="modal-area"></span>
+                    </div>
+                    <div class="modal-info-item" id="modal-submitted-by-container" style="display: none;"> 
+                        <strong>Submitted By</strong>
+                        <span id="modal-user"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>Issue Submitted Time</strong>
+                        <span id="modal-date-full"></span>
+                    </div>
+                    
+                    <div class="modal-info-item" id="modal-resolved-time-container" style="display: none;">
+                        <strong>Issue Resolved Time</strong>
+                        <span id="modal-resolved-time"></span>
+                    </div>
+                    
+                    <div class="modal-info-item" id="modal-solved-in-time-container" style="display: none; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                        <strong>Solved In-Time</strong>
+                        <span id="modal-solved-in-time" style="font-weight: 700; color: var(--success-color);"></span>
+                    </div>
+                    
+                    <div id="modal-actions" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-direction: column; gap: 10px;">
+                        <button id="get-directions-btn" class="btn btn-primary" style="padding: 0.8rem 1.5rem; width: 100%;"><i class="fas fa-route"></i> Get Directions</button>
+                        
+                        <button id="view-location-btn" class="btn btn-secondary" style="padding: 0.8rem 1.5rem; width: 100%; display: none;"><i class="fas fa-map-marker-alt"></i> View Location</button>
+                        <button id="resolved-image-btn" class="btn btn-success" style="padding: 0.8rem 1.5rem; width: 100%; display: block;"><i class="fas fa-check-circle"></i> Resolved Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="area-management-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Manage Areas</h3>
+                <button id="area-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <form id="add-area-form" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+                    <h4>Add New Area</h4>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <input type="text" id="new-area-name" placeholder="Enter new area name" required style="flex-grow: 1;">
+                        <button type="submit" class="btn btn-primary">Add Area</button>
+                    </div>
+                </form>
+
+                <h4>Current Areas</h4>
+                <div class="area-list" id="current-areas-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="bbmp-account-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Municipal Staff Account Management</h3>
+                <button id="bbmp-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <div class="form-group">
+                    <label for="bbmp-area-select">Select Area</label>
+                    <select id="bbmp-area-select" required>
+                        <option value="" disabled selected>-- Choose an Area --</option>
+                    </select>
+                </div>
+                
+                <div id="bbmp-account-info" style="border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--border-radius); display: none;">
+                    <h4>Account Details for <span id="bbmp-area-name-display" style="color: var(--primary-color);"></span></h4>
+                    <p><strong>Username (Email):</strong> <span id="bbmp-username-display"></span></p>
+                    <p><strong>Default Password:</strong> <span id="bbmp-password-display"></span></p>
+
+                    <button id="create-bbmp-account-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
+                    
+                    <div id="bbmp-reset-section" style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                        <h5>Reset Password</h5>
+                        <form id="bbmp-reset-form">
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <input type="password" id="new-bbmp-password" placeholder="Enter New Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary" style="width: 100%;">Update Password</button>
+                            <p id="bbmp-reset-message" style="display: none; margin-top: 10px; font-weight: 600;"></p>
+                        </form>
+                    </div>
+                </div>
+                <p id="bbmp-area-message" style="text-align: center; color: var(--secondary-color); margin-top: 1rem;">Select an area/worker to view/manage their Municipal staff/worker account.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="assign-worker-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Assign Report: <span id="assign-modal-report-id-display"></span></h3>
+                <button id="assign-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <h4>Workers in Your Area</h4>
+                <p style="color: var(--secondary-color); margin-top: -10px; margin-bottom: 1.5rem;">Select a worker to assign this issue to.</p>
+                
+                <div id="assign-worker-list" class="area-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                    <p style="text-align: center; padding: 10px;"><i class="fas fa-spinner fa-spin"></i> Loading workers...</p>
+                </div>
+                <p id="assign-status-message" style="margin-top: 1rem; font-weight: 600; display: none;"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="worker-profile-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Update Worker Profile</h3>
+                <button id="worker-profile-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <form id="worker-profile-update-form">
+                    <div class="form-group">
+                        <label for="worker-update-name">Full Name</label>
+                        <input type="text" id="worker-update-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="worker-update-password">New Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="worker-update-password" placeholder="Enter new password (optional)">
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+                    <p id="worker-update-message" style="margin-top: 10px; font-weight: 600; display: none;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="bbmp-worker-management-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Manage Workers</h3>
+                <button id="worker-mgmt-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <form id="add-worker-form" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem;">
+                    <h4>Add New Worker</h4>
+                    <div class="form-group" style="display: flex; gap: 10px;">
+                        <input type="text" id="new-worker-name" placeholder="Enter Worker's Full Name" required style="flex-grow: 1;">
+                        <button type="submit" class="btn btn-primary">Add Worker</button>
+                    </div>
+                </form>
+
+                <h4>Current Workers (In Your Area)</h4>
+                <div class="area-list" id="current-workers-list" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius);">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="worker-resolution-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Resolution Proof for Report: <span id="resolution-modal-report-id"></span></h3>
+                <button id="resolution-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <p style="color: var(--secondary-color); margin-top: -10px; margin-bottom: 1.5rem;">Upload a photo or video showing the resolved issue. This will automatically update the report status to "Resolved".</p>
+                
+                <form id="resolution-upload-form">
+                    <div class="form-group">
+                        <label for="resolution-file-upload-zone">Upload Photo or Video</label>
+                        <div id="resolution-file-upload-zone" class="file-drop-zone" style="padding: 1rem;">
+                            <div style="margin-bottom: 10px; font-weight: 600;">Choose Media Source:</div>
+                            <div class="resolve-upload-btn-group">
+                                <button type="button" class="btn btn-secondary resolution-upload-source-btn" data-source="gallery" id="res-gallery-btn"><i class="fas fa-image"></i> Gallery/Files</button>
+                                <button type="button" class="btn btn-secondary resolution-upload-source-btn" data-source="camera" id="res-camera-btn"><i class="fas fa-camera"></i> Camera</button>
+                            </div>
+                            <input type="file" id="resolution-media-file" accept="image/*,video/*" class="file-input-hidden" required>
+                        </div>
+                        <div id="resolution-file-preview-container" style="margin-top: 10px;"></div>
+                    </div>
+                    <input type="hidden" id="resolution-report-id-input">
+                    <button type="submit" class="btn btn-resolve" id="submit-resolution-proof" style="width: 100%;" disabled>Submit Proof & Resolve</button>
+                    <p id="resolution-upload-message" style="margin-top: 10px; font-weight: 600; display: none;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="worker-leave-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Apply Worker Leave</h3>
+                <button id="leave-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <p style="color: var(--secondary-color); margin-top: -10px; margin-bottom: 1.5rem;">Select a worker and the leave date(s). Workers on leave are excluded from automatic assignment.</p>
+                
+                <form id="apply-leave-form">
+                    <div class="form-group">
+                        <label for="leave-worker-select">Select Worker</label>
+                        <select id="leave-worker-select" required>
+                            <option value="" disabled selected>-- Select a Worker --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leave-start-date">Leave Start Date</label>
+                        <input type="date" id="leave-start-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="leave-end-date">Leave End Date (Optional for single day)</label>
+                        <input type="date" id="leave-end-date">
+                    </div>
+                    
+                    <p id="leave-status-message" style="margin-top: 1rem; font-weight: 600; display: none;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Leave</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div id="worker-leaves-list-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>Applied Worker Leaves</h3>
+                <button id="leaves-list-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <h4>Active and Upcoming Leaves in Your Area</h4>
+                <div class="reports-table-container" style="overflow-x: auto;">
+                     <table class="reports-table">
+                        <thead> <tr> <th>WORKER NAME</th> <th>START DATE</th> <th>END DATE</th> </tr> </thead>
+                        <tbody id="leaves-list-tbody"><tr><td colspan="3" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Loading leaves...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="urbo-assistant-button" class="urbo-assistant-button">
+        <div class="icon-circle"><i class="fas fa-comment-alt"></i></div>
+        <div class="name">Urbo Virtual Assistant</div>
+    </div>
+    
+    <div id="urbo-chat-window" class="urbo-chat-window">
+        <div class="urbo-chat-header">
+            Urbo Virtual Assistant
+            <button id="urbo-chat-close-btn">×</button>
+        </div>
+        <div class="urbo-chat-body">
+            <p style="color: var(--secondary-color); margin-bottom: 10px;">Hello! I am your Urbo Virtual Assistant. I can assist you in English, Hindi, Telugu, Kannada, and Tamil.</p>
+        </div>
+        <div class="urbo-chat-input">
+            <input type="text" id="urbo-chat-input-text" placeholder="Type your message...">
+            <button id="urbo-chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+    <div id="forgot-password-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Citizen Password Reset Request</h3>
+                <button id="forgot-password-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <p id="reset-modal-description" style="color: var(--secondary-color); margin-top: -10px; margin-bottom: 1.5rem;">
+                    Enter your registered email address. If an account exists, a password reset link will be sent to your inbox.
+                </p>
+                
+                <form id="forgot-password-form">
+                    <div class="form-group">
+                        <label for="reset-email-input">Email Address</label>
+                        <input type="email" id="reset-email-input" required>
+                    </div>
+                    <p id="reset-status-message" style="margin-top: 1rem; font-weight: 600; display: none;"></p>
+                    <button type="submit" id="send-reset-email-btn" class="btn btn-primary" style="width: 100%;">Send Reset Link</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="worker-rejection-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Reject Report: <span id="rejection-modal-report-id"></span></h3>
+                <button id="rejection-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <p style="color: var(--danger-color); margin-top: -10px; margin-bottom: 1.5rem;">
+                    Explain why this report cannot be addressed (e.g., duplicate, wrong location, already fixed).
+                    Your supervisor will review and finalize the rejection.
+                </p>
+                <form id="rejection-form">
+                    <div class="form-group">
+                        <label for="rejection-reason">Reason for Rejection (Min 10 characters)</label>
+                        <textarea id="rejection-reason" rows="4" required minlength="10"></textarea>
+                    </div>
+                    <input type="hidden" id="rejection-report-id-input">
+                    <button type="submit" class="btn btn-sign-out" id="submit-rejection" style="width: 100%;">Submit for Review</button>
+                    <p id="rejection-status-message" style="margin-top: 10px; font-weight: 600; display: none;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="supervisor-rejection-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Review Rejection: <span id="supervisor-rejection-modal-report-id"></span></h3>
+                <button id="supervisor-modal-close-btn" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="grid-template-columns: 1fr;">
+                <p style="color: var(--secondary-color); margin-top: -10px; margin-bottom: 1.5rem;">
+                    The assigned worker flagged this report for rejection. Review the reason and decide whether to approve the rejection or override the request.
+                </p>
+                <form id="supervisor-rejection-form">
+                    <div class="form-group">
+                        <label for="supervisor-rejection-reason">Worker's Reason (Editable for final rejection)</label>
+                        <textarea id="supervisor-rejection-reason" rows="4" required minlength="10"></textarea>
+                    </div>
+                    <input type="hidden" id="supervisor-report-id-input">
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button type="button" class="btn btn-primary" id="supervisor-override-btn" style="width: 50%;">Override (Set In Progress)</button>
+                        <button type="submit" class="btn btn-sign-out" id="submit-supervisor-rejection" style="width: 50%;">Final Reject</button>
+                    </div>
+                    <p id="supervisor-status-message" style="margin-top: 10px; font-weight: 600; display: none;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>

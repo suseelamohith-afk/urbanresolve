@@ -1,0 +1,24 @@
+{
+  "name": "urban-resolve-backend",
+  "version": "1.0.0",
+  "description": "Backend for the UrbanResolve civic issue reporting application.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.29.1",
+    "@google/genai": "^1.31.0",
+    "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.6.3",
+    "multer": "^1.4.5-lts.1"
+  }
+}
